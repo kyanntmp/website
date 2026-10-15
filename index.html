@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="meta.title">Kyann | Welcome Here!</title>
+  <meta name="description" content="Personal website of Kyann: TruckersMP driver, Human Resources Manager at Jastuk VTC and future computer science teacher." data-i18n-attr="content:meta.description">
+  <meta name="theme-color" content="#0f1314">
+
+  <!-- Tab icon (hosted online) -->
+  <link rel="icon" href="https://i.ibb.co/j9bqWQWd/image.png" type="image/png">
+  <link rel="apple-touch-icon" href="https://i.ibb.co/j9bqWQWd/image.png">
+
+  <!-- Choose the color theme before the page is drawn, so it does not flash.
+       Halloween comes first: from 1 October 2026 to 1 November 2026 (included), every time the page opens.
+       Outside these dates, the visitor's saved theme (or the default Black theme) is used.
+       To move the period, change the two dates below. Months start at 0: 9 = October, 10 = November. -->
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var now = new Date();
+      var festive = now >= new Date(2026, 9, 1) && now < new Date(2026, 10, 2);
+      var themes = ["black", "white", "pink", "navy", "forest", "violet"]; // themes a visitor can keep
+      var theme = null;
+      try {
+        theme = localStorage.getItem("kyann-site-theme");
+        localStorage.removeItem("kyann-site-custom"); // leftover of a theme that no longer exists
+      } catch (e) { /* storage blocked: default theme */ }
+
+      // Unknown, removed or seasonal theme saved earlier: back to the default
+      if (themes.indexOf(theme) === -1) theme = null;
+      if (festive) {
+        root.setAttribute("data-festive", "halloween");
+        theme = "halloween";
+      }
+      if (theme) root.setAttribute("data-theme", theme);
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<!--
+  Translations: every text with a data-i18n="key" attribute is filled from js/i18n.js.
+  The English text written here is only a fallback. To change a text, edit js/i18n.js.
+-->
+<body>
+  <a class="skip" href="#about" data-i18n="skip">Skip to content</a>
+
+  <!-- Live clock, top left. Local time of the visitor. Filled by js/script.js -->
+  <div class="pill clock" id="clock" role="timer" aria-label="Local time" data-i18n-attr="aria-label:clock.label">
+    <div class="clock-time">
+      <span class="clock-dot" aria-hidden="true"></span>
+      <span><span id="clock-hm">00:00</span><span class="clock-sec" id="clock-sec">:00</span></span>
+      <span class="clock-tz" id="clock-tz"></span>
+    </div>
+    <div class="clock-date"><span class="clock-date-long" id="clock-date-long"></span><span class="clock-date-short" id="clock-date-short"></span></div>
+  </div>
+
+  <!-- Top bar: color theme + language -->
+  <div class="topbar">
+    <div class="theme">
+      <button class="pill theme-toggle" id="theme-toggle" type="button" aria-expanded="false" aria-controls="theme-menu" aria-label="Choose a color theme" title="Choose a color theme" data-i18n-attr="aria-label:theme.choose,title:theme.choose">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
+        <span data-i18n="theme.label">Theme</span>
+      </button>
+      <div class="theme-menu" id="theme-menu" role="group" aria-label="Choose a color theme" data-i18n-attr="aria-label:theme.choose" hidden>
+        <button class="theme-opt" type="button" data-theme-option="halloween" aria-pressed="false" hidden><span class="swatch" style="--sw1:#120b1a;--sw2:#ff7a1a"></span><span data-i18n="theme.halloween">Halloween 🎃</span></button>
+        <button class="theme-opt" type="button" data-theme-option="black" aria-pressed="true"><span class="swatch" style="--sw1:#0f1314;--sw2:#f0b44c"></span><span data-i18n="theme.black">Black</span></button>
+        <button class="theme-opt" type="button" data-theme-option="white" aria-pressed="false"><span class="swatch" style="--sw1:#f4f5f1;--sw2:#a85d00"></span><span data-i18n="theme.white">White</span></button>
+        <button class="theme-opt" type="button" data-theme-option="pink" aria-pressed="false"><span class="swatch" style="--sw1:#fdeef2;--sw2:#c2255c"></span><span data-i18n="theme.pink">Pink</span></button>
+        <button class="theme-opt" type="button" data-theme-option="navy" aria-pressed="false"><span class="swatch" style="--sw1:#0a1322;--sw2:#f2c14e"></span><span data-i18n="theme.navy">Navy blue</span></button>
+        <button class="theme-opt" type="button" data-theme-option="forest" aria-pressed="false"><span class="swatch" style="--sw1:#0d1410;--sw2:#e2b95f"></span><span data-i18n="theme.forest">Forest green</span></button>
+        <button class="theme-opt" type="button" data-theme-option="violet" aria-pressed="false"><span class="swatch" style="--sw1:#110e1d;--sw2:#ff8fc2"></span><span data-i18n="theme.violet">Violet</span></button>
+      </div>
+    </div>
+
+    <!-- Language picker: a toggle that shows the current flag, and a menu of languages -->
+    <div class="lang-picker">
+      <button class="pill lang-toggle" id="lang-toggle" type="button" aria-expanded="false" aria-controls="lang-menu" aria-label="Language" title="Language" data-i18n-attr="aria-label:lang.label,title:lang.label">
+        <span class="lang-flag" id="lang-current-flag" aria-hidden="true"></span>
+        <span id="lang-current-code">EN</span>
+        <svg class="lang-caret" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="lang-menu" id="lang-menu" role="group" aria-label="Language" data-i18n-attr="aria-label:lang.label" hidden>
+        <button class="lang-opt" type="button" data-lang="fr" lang="fr" aria-pressed="false">
+          <svg class="flag" viewBox="0 0 3 2" aria-hidden="true" focusable="false"><rect width="1" height="2" fill="#0055A4"/><rect x="1" width="1" height="2" fill="#fff"/><rect x="2" width="1" height="2" fill="#EF4135"/></svg>
+          <span>Français</span>
+        </button>
+        <button class="lang-opt" type="button" data-lang="en" lang="en" aria-pressed="true">
+          <svg class="flag" viewBox="0 0 60 30" aria-hidden="true" focusable="false"><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="2.4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></svg>
+          <span>English</span>
+        </button>
+        <button class="lang-opt" type="button" data-lang="de" lang="de" aria-pressed="false">
+          <svg class="flag" viewBox="0 0 5 3" aria-hidden="true" focusable="false"><rect width="5" height="1" fill="#000"/><rect y="1" width="5" height="1" fill="#DD0000"/><rect y="2" width="5" height="1" fill="#FFCE00"/></svg>
+          <span>Deutsch</span>
+        </button>
+        <button class="lang-opt" type="button" data-lang="es" lang="es" aria-pressed="false">
+          <svg class="flag" viewBox="0 0 3 2" aria-hidden="true" focusable="false"><rect width="3" height="2" fill="#AA151B"/><rect y="0.5" width="3" height="1" fill="#F1BF00"/></svg>
+          <span>Español</span>
+        </button>
+        <button class="lang-opt" type="button" data-lang="it" lang="it" aria-pressed="false">
+          <svg class="flag" viewBox="0 0 3 2" aria-hidden="true" focusable="false"><rect width="1" height="2" fill="#009246"/><rect x="1" width="1" height="2" fill="#fff"/><rect x="2" width="1" height="2" fill="#CE2B37"/></svg>
+          <span>Italiano</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Truck seen from above. Reused by the Experience road. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="truck" viewBox="0 0 24 56">
+      <rect x="2" y="2" width="20" height="34" rx="3" fill="currentColor" opacity=".8"/>
+      <rect x="9" y="36" width="6" height="5" fill="currentColor"/>
+      <rect x="3" y="40" width="18" height="14" rx="4" fill="currentColor"/>
+      <rect class="truck-glass" x="5" y="45" width="14" height="4" rx="1"/>
+    </symbol>
+  </svg>
+
+  <!-- Side navigation: fixed on the right, centered vertically -->
+  <nav class="dock" aria-label="Sections" data-i18n-attr="aria-label:nav.label">
+    <ul>
+      <li><a href="#about"><span class="dock-label" data-i18n="nav.about">About Me</span><span class="dock-dot"></span></a></li>
+      <li><a href="#experience"><span class="dock-label" data-i18n="nav.experience">Experience</span><span class="dock-dot"></span></a></li>
+      <li><a href="#gallery"><span class="dock-label" data-i18n="nav.gallery">Gallery</span><span class="dock-dot"></span></a></li>
+      <li><a href="#vtc"><span class="dock-label" data-i18n="nav.vtc">My VTC</span><span class="dock-dot"></span></a></li>
+      <li><a href="#changes"><span class="dock-label" data-i18n="nav.changes">Latest Changes</span><span class="dock-dot"></span></a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- ================= HERO ================= -->
+    <header class="hero">
+      <div class="wrap">
+        <!-- Typewriter text. Filled by js/hero.js. The sr-only spans carry the text for screen readers. -->
+        <h1 class="hero-title">
+          <span class="sr-only" id="sr-welcome" data-i18n="hero.welcome1">Welcome to my website!</span>
+          <span class="typed-box" aria-hidden="true">
+            <span class="typed-sizer" id="sizer-welcome"></span>
+            <span class="typed-line"><span id="typed-welcome"></span><span class="typed-cursor typed-cursor--blink" id="cursor-welcome">|</span></span>
+          </span>
+        </h1>
+        <p class="hero-greeting">
+          <span class="sr-only" id="sr-greeting"></span>
+          <span class="typed-box" aria-hidden="true">
+            <span class="typed-sizer" id="sizer-greeting"></span>
+            <span class="typed-line"><span id="typed-greeting"></span><span class="typed-cursor typed-cursor--blink is-hidden" id="cursor-greeting">|</span></span>
+          </span>
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#about" data-i18n="hero.cta1">Me</a>
+          <a class="btn btn-ghost" href="#experience" data-i18n="hero.cta2">Follow the road</a>
+        </div>
+      </div>
+      <div class="hero-road" aria-hidden="true"></div>
+    </header>
+
+    <!-- ================= ABOUT ME ================= -->
+    <section id="about" class="section">
+      <div class="wrap">
+        <h2 data-i18n="nav.about">About Me</h2>
+
+        <div class="about-grid">
+          <div class="about-text">
+            <p class="big" data-i18n="about.lead">Hi! My name is Kyann.</p>
+            <p data-i18n="about.text">Besides school and my friends, Euro Truck Simulator is a big part of my life. I first discovered it in 2016, but I only really got back into it in late 2024, after building my own PC. When I joined TruckersMP, I was amazed by the sheer size of its community. Within a few days, I joined a VTC and made lots of friends. Since then, TruckersMP has become much more than just a game for me: it’s a true passion and a community I’m proud to be part of!</p>
+
+            <dl class="facts">
+              <div><dt data-i18n="about.roots">Roots</dt><dd data-i18n="about.rootsValue">South of France</dd></div>
+              <div><dt><span data-i18n="about.lives">Lives in</span> <span class="emoji" aria-hidden="true">🏠</span></dt><dd data-i18n="about.livesValue">Lyon</dd></div>
+              <div><dt data-i18n="about.plays">Plays</dt><dd>TruckersMP</dd></div>
+            </dl>
+
+            <h3 data-i18n="about.enjoy">What I enjoy</h3>
+            <ul class="passions">
+              <li data-i18n="passion.1">Learning new things</li>
+              <li data-i18n="passion.2">Talking with my friends</li>
+              <li data-i18n="passion.3">Playing TruckersMP</li>
+              <li data-i18n="passion.4">Listening to music</li>
+              <li data-i18n="passion.5">Driving and chatting with friends</li>
+              <li data-i18n="passion.6">Eating</li>
+            </ul>
+          </div>
+
+          <div class="about-side">
+            <!-- Lyon photos. object-fit: cover crops them without stretching.
+                 Change --pos (x y) on an image to move the part that stays visible. -->
+            <div class="lyon" role="group" aria-label="Photos of Lyon" data-i18n-attr="aria-label:lyon.label">
+              <figure class="photo photo-wide"><img src="https://i.ibb.co/Hp96bqmc/unnamed.jpg" alt="Panoramic view of Lyon" data-i18n-attr="alt:lyon.alt1" style="--pos:50% 50%" referrerpolicy="no-referrer" loading="lazy" data-fallback><figcaption data-i18n="lyon.cap1">Lyon</figcaption></figure>
+              <figure class="photo"><img src="https://i.ibb.co/zhM5tWtg/image.png" alt="A street in Vieux Lyon" data-i18n-attr="alt:lyon.alt2" style="--pos:50% 50%" referrerpolicy="no-referrer" loading="lazy" data-fallback><figcaption data-i18n="lyon.cap2">Vieux Lyon</figcaption></figure>
+              <figure class="photo"><img src="https://i.ibb.co/pqkTrSW/unnamed.jpg" alt="The banks of the Rhône in Lyon" data-i18n-attr="alt:lyon.alt3" style="--pos:50% 50%" referrerpolicy="no-referrer" loading="lazy" data-fallback><figcaption data-i18n="lyon.cap3">Along the Rhône</figcaption></figure>
+            </div>
+
+            <div class="discord">
+              <h3 data-i18n="discord.title">Discord activity</h3>
+              <img src="https://discord.c99.nl/widget/theme-1/1343333598467461140.png" alt="Discord activity widget" data-i18n-attr="alt:discord.alt" loading="lazy" data-hide-on-error>
+            </div>
+
+            <!-- Spotify: what is playing right now. Settings are at the top of js/script.js (SPOTIFY). -->
+            <div class="spotify" id="spotify">
+              <h3>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                <span data-i18n="spotify.title">Listening on Spotify</span>
+              </h3>
+              <div class="spotify-card" id="spotify-card" data-state="idle">
+                <div class="spotify-art" id="spotify-art">
+                  <img id="spotify-img" alt="" referrerpolicy="no-referrer" hidden>
+                  <svg id="spotify-art-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                </div>
+                <div class="spotify-info">
+                  <p class="spotify-status"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="spotify-status" data-i18n="spotify.idle">Nothing playing right now</span></p>
+                  <p class="spotify-song" id="spotify-song" hidden></p>
+                  <p class="spotify-artist" id="spotify-artist" hidden></p>
+                  <div class="spotify-progress" id="spotify-progress" hidden><span id="spotify-bar"></span></div>
+                  <a class="spotify-link" id="spotify-link" href="https://open.spotify.com/user/31z7wwxk6rhnvkjrj4wmrf2bjq2m" target="_blank" rel="noopener" data-i18n="spotify.profile">Open my Spotify profile</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= EXPERIENCE ================= -->
+    <section id="experience" class="section">
+      <div class="wrap">
+        <h2 data-i18n="nav.experience">Experience</h2>
+
+        <ol class="road" id="road">
+          <li class="road-line" aria-hidden="true">
+            <span class="road-progress"></span>
+            <svg class="truck-marker" width="22" height="52"><use href="#truck"/></svg>
+          </li>
+
+          <li class="stop">
+            <time class="stop-date" datetime="2024-11" data-i18n="exp.s1.date">November 2024</time>
+            <span class="node" aria-hidden="true"></span>
+            <article class="stop-card">
+              <button class="stop-head" aria-expanded="false" aria-controls="stop-1">
+                <span class="logo" data-initials="TM"><img src="https://i.ibb.co/HfDnKvPW/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+                <span class="stop-title"><span class="stop-name" data-i18n="exp.s1.name">First kilometers on TruckersMP</span><span class="org">TruckersMP</span></span>
+                <span class="chev" aria-hidden="true"></span>
+              </button>
+              <div class="stop-body" id="stop-1"><div>
+                <p data-i18n="exp.s1.text">I joined the multiplayer mod for Euro Truck Simulator 2 and discovered convoys, server rules and a big community.</p>
+                <div class="stop-links">
+                  <a class="stop-link" href="https://truckersmp.com/" target="_blank" rel="noopener" data-i18n="exp.s1.link">Visit TruckersMP</a>
+                </div>
+              </div></div>
+            </article>
+          </li>
+
+          <li class="stop">
+            <time class="stop-date" datetime="2024-12" data-i18n="exp.s2.date">December 2024</time>
+            <span class="node" aria-hidden="true"></span>
+            <article class="stop-card">
+              <button class="stop-head" aria-expanded="false" aria-controls="stop-2">
+                <span class="logo" data-initials="KL"><img src="https://i.ibb.co/HfGZ4fhz/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+                <span class="stop-title"><span class="stop-name" data-i18n="exp.s2.name">My first VTC</span><span class="org">Krone Liner</span></span>
+                <span class="chev" aria-hidden="true"></span>
+              </button>
+              <div class="stop-body" id="stop-2"><div>
+                <p data-i18n="exp.s2.text">I joined Krone Liner and took part in my first organized convoys as part of a team.</p>
+                <div class="stop-links">
+                  <a class="stop-link" href="https://truckersmp.com/vtc/65490" target="_blank" rel="noopener" data-i18n="exp.s2.link">Krone Liner on TruckersMP</a>
+                </div>
+              </div></div>
+            </article>
+          </li>
+
+          <li class="stop">
+            <time class="stop-date" datetime="2025-02" data-i18n="exp.s3.date">February 2025</time>
+            <span class="node" aria-hidden="true"></span>
+            <article class="stop-card">
+              <button class="stop-head" aria-expanded="false" aria-controls="stop-3">
+                <span class="logo" data-initials="AC"><img src="https://i.ibb.co/DH4xnMkD/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+                <span class="stop-title"><span class="stop-name" data-i18n="exp.s3.name">New team, new routes</span><span class="org">Alpine Cargo</span></span>
+                <span class="chev" aria-hidden="true"></span>
+              </button>
+              <div class="stop-body" id="stop-3"><div>
+                <p data-i18n="exp.s3.text">I arrived at Alpine Cargo and became an active member of the community, on the road and on Discord.</p>
+                <div class="stop-links">
+                  <a class="stop-link" href="https://truckersmp.com/vtc/67523" target="_blank" rel="noopener" data-i18n="exp.s3.link">Alpine Cargo on TruckersMP</a>
+                </div>
+              </div></div>
+            </article>
+          </li>
+
+          <li class="stop">
+            <time class="stop-date" datetime="2025-05" data-i18n="exp.s4.date">May 2025</time>
+            <span class="node" aria-hidden="true"></span>
+            <article class="stop-card">
+              <button class="stop-head" aria-expanded="false" aria-controls="stop-4">
+                <span class="logo" data-initials="AC"><img src="https://i.ibb.co/DH4xnMkD/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+                <span class="stop-title"><span class="stop-name" data-i18n="exp.s4.name">Public Relations and Discord moderator</span><span class="org">Alpine Cargo</span></span>
+                <span class="chev" aria-hidden="true"></span>
+              </button>
+              <div class="stop-body" id="stop-4"><div>
+                <p data-i18n="exp.s4.text">My first responsibilities: I represented the VTC, helped with its communication and moderated the Discord server.</p>
+              </div></div>
+            </article>
+          </li>
+
+          <li class="stop">
+            <time class="stop-date" datetime="2026-04" data-i18n="exp.s5.date">April 2026</time>
+            <span class="node" aria-hidden="true"></span>
+            <article class="stop-card">
+              <button class="stop-head" aria-expanded="false" aria-controls="stop-5">
+                <span class="logo" data-initials="J"><img src="https://i.ibb.co/Q7bSKdXL/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+                <span class="stop-title"><span class="stop-name" data-i18n="exp.s5.name">Human Resources and Discord moderator</span><span class="org">Jastuk</span></span>
+                <span class="chev" aria-hidden="true"></span>
+              </button>
+              <div class="stop-body" id="stop-5"><div>
+                <p data-i18n="exp.s5.text">I joined Jastuk in the month it launched. I reviewed applications, welcomed new drivers and moderated the Discord server.</p>
+                <div class="stop-links">
+                  <a class="stop-link" href="https://jastukvtc.com/" target="_blank" rel="noopener" data-i18n="exp.s5.link">Visit Jastuk</a>
+                </div>
+              </div></div>
+            </article>
+          </li>
+
+          <li class="stop">
+            <time class="stop-date" datetime="2026-04" data-i18n="exp.s6.date">April 2026</time>
+            <span class="node" aria-hidden="true"></span>
+            <article class="stop-card">
+              <button class="stop-head" aria-expanded="false" aria-controls="stop-6">
+                <span class="logo" data-initials="ACC"><img src="https://i.ibb.co/8D8TQSH7/f57ee5edb56aea6a9404ade75ff4816fe15c59a6b78221dd9a60708775990e76.webp" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+                <span class="stop-title"><span class="stop-name" data-i18n="exp.s6.name">Support Team member</span><span class="org">Alpine Custom Culture</span></span>
+                <span class="chev" aria-hidden="true"></span>
+              </button>
+              <div class="stop-body" id="stop-6"><div>
+                <p data-i18n="exp.s6.text">I joined the Alpine Custom Culture team as a member of the Support Team. Alpine Custom Culture is a community built around customization.</p>
+                <div class="stop-links">
+                  <a class="stop-link" href="https://alpcc.online/?lang=en" data-lang-link="https://alpcc.online/" target="_blank" rel="noopener" data-i18n="exp.s6.link">Visit Alpine Custom Culture</a>
+                  <a class="stop-link" href="https://alpcc.online/team?lang=en" data-lang-link="https://alpcc.online/team" target="_blank" rel="noopener" data-i18n="exp.team">Meet the team</a>
+                </div>
+              </div></div>
+            </article>
+          </li>
+
+          <li class="stop">
+            <time class="stop-date" datetime="2026-04" data-i18n="exp.s9.date">April 2026</time>
+            <span class="node" aria-hidden="true"></span>
+            <article class="stop-card">
+              <button class="stop-head" aria-expanded="false" aria-controls="stop-9">
+                <span class="logo" data-initials="LX"><img src="https://i.ibb.co/dsfr9TzW/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+                <span class="stop-title"><span class="stop-name" data-i18n="exp.s9.name">Moderation team member</span><span class="org">LX TruckStyling</span></span>
+                <span class="chev" aria-hidden="true"></span>
+              </button>
+              <div class="stop-body" id="stop-9"><div>
+                <p data-i18n="exp.s9.text">I joined the moderation team of LX TruckStyling.</p>
+                <div class="stop-links">
+                  <a class="stop-link" href="https://discord.gg/PqVKNc9B47" target="_blank" rel="noopener" data-i18n="exp.s9.link">LX TruckStyling on Discord</a>
+                </div>
+              </div></div>
+            </article>
+          </li>
+
+          <li class="stop">
+            <time class="stop-date" datetime="2026-07" data-i18n="exp.s7.date">July 2026 – present</time>
+            <span class="node" aria-hidden="true"></span>
+            <article class="stop-card">
+              <button class="stop-head" aria-expanded="false" aria-controls="stop-7">
+                <span class="logo" data-initials="J"><img src="https://i.ibb.co/Q7bSKdXL/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+                <span class="stop-title"><span class="stop-name" data-i18n="exp.s7.name">Human Resources Manager and Discord moderator</span><span class="org">Jastuk</span></span>
+                <span class="chev" aria-hidden="true"></span>
+              </button>
+              <div class="stop-body" id="stop-7"><div>
+                <p data-i18n="exp.s7.text">I lead recruitment: I review applications, onboard new members, handle ban appeals and write the procedures and guides our HR team uses.</p>
+                <div class="stop-links">
+                  <a class="stop-link" href="https://truckersmp.com/vtc/88850/" target="_blank" rel="noopener" data-i18n="exp.s7.link">Jastuk on TruckersMP</a>
+                </div>
+              </div></div>
+            </article>
+          </li>
+
+          <li class="stop">
+            <time class="stop-date" datetime="2026-09" data-i18n="exp.s8.date">September 2026</time>
+            <span class="node" aria-hidden="true"></span>
+            <article class="stop-card">
+              <button class="stop-head" aria-expanded="true" aria-controls="stop-8">
+                <span class="logo" data-initials="ACC"><img src="https://i.ibb.co/8D8TQSH7/f57ee5edb56aea6a9404ade75ff4816fe15c59a6b78221dd9a60708775990e76.webp" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+                <span class="stop-title"><span class="stop-name" data-i18n="exp.s8.name">Promoted to management</span><span class="org">Alpine Custom Culture</span></span>
+                <span class="chev" aria-hidden="true"></span>
+              </button>
+              <div class="stop-body" id="stop-8"><div>
+                <p data-i18n="exp.s8.text">I was promoted into the management team of Alpine Custom Culture.</p>
+                <div class="stop-links">
+                  <a class="stop-link" href="https://alpcc.online/team?lang=en" data-lang-link="https://alpcc.online/team" target="_blank" rel="noopener" data-i18n="exp.team">Meet the team</a>
+                </div>
+              </div></div>
+            </article>
+          </li>
+
+          <!-- End of the road: the current month, kept up to date by js/script.js -->
+          <li class="stop stop-end">
+            <time class="stop-date" id="live-month" datetime=""></time>
+            <span class="node" aria-hidden="true"></span>
+            <p class="stop-live"><span class="clock-dot" aria-hidden="true"></span><span data-i18n="exp.live">Live</span></p>
+          </li>
+        </ol>
+
+        <!-- Communities: logos, clickable when the community has a page -->
+        <h3 class="exp-sub" data-i18n="communities.title">Communities</h3>
+        <ul class="communities">
+          <li><a class="community" href="https://truckersmp.com/" target="_blank" rel="noopener">
+            <span class="logo" data-initials="TM"><img src="https://i.ibb.co/HfDnKvPW/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+            <span class="community-name">TruckersMP</span></a></li>
+          <li><a class="community" href="https://truckersmp.com/vtc/65490" target="_blank" rel="noopener">
+            <span class="logo" data-initials="KL"><img src="https://i.ibb.co/HfGZ4fhz/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+            <span class="community-name">Krone Liner</span></a></li>
+          <li><a class="community" href="https://truckersmp.com/vtc/67523" target="_blank" rel="noopener">
+            <span class="logo" data-initials="AC"><img src="https://i.ibb.co/DH4xnMkD/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+            <span class="community-name">Alpine Cargo</span></a></li>
+          <li><a class="community" href="https://jastukvtc.com/" target="_blank" rel="noopener">
+            <span class="logo" data-initials="J"><img src="https://i.ibb.co/Q7bSKdXL/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+            <span class="community-name">Jastuk</span></a></li>
+          <li><a class="community" href="https://alpcc.online/?lang=en" data-lang-link="https://alpcc.online/" target="_blank" rel="noopener">
+            <span class="logo" data-initials="ACC"><img src="https://i.ibb.co/8D8TQSH7/f57ee5edb56aea6a9404ade75ff4816fe15c59a6b78221dd9a60708775990e76.webp" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+            <span class="community-name">Alpine Custom Culture</span></a></li>
+          <li><a class="community" href="https://discord.gg/PqVKNc9B47" target="_blank" rel="noopener">
+            <span class="logo" data-initials="LX"><img src="https://i.ibb.co/dsfr9TzW/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+            <span class="community-name">LX TruckStyling</span></a></li>
+        </ul>
+
+      </div>
+    </section>
+
+    <!-- ================= GALLERY ================= -->
+    <section id="gallery" class="section">
+      <div class="wrap">
+        <h2 data-i18n="nav.gallery">Gallery</h2>
+        <p class="section-intro" id="gallery-intro" data-i18n="gallery.intro">Click a photo to open it full size, then zoom in to see every detail.</p>
+        <div class="filters" id="gallery-filters" role="group" aria-label="Filter photos" data-i18n-attr="aria-label:gallery.filters">
+          <button class="chip is-active" data-filter="all" aria-pressed="true" data-i18n="gallery.all">All</button>
+          <button class="chip" data-filter="tmp" aria-pressed="false">TruckersMP</button>
+          <button class="chip" data-filter="drive" aria-pressed="false" data-i18n="gallery.drive">Driving sessions</button>
+          <button class="chip" data-filter="vtc" aria-pressed="false">VTC</button>
+        </div>
+        <div class="grid" id="gallery-grid"></div>
+        <div class="gallery-more" id="gallery-more-wrap" hidden>
+          <button class="btn btn-ghost" id="gallery-more" type="button" aria-expanded="false" aria-controls="gallery-grid">See more</button>
+        </div>
+        <p class="gallery-empty" id="gallery-empty" data-i18n="gallery.empty" hidden>Photos are coming soon.</p>
+        <noscript><p>Enable JavaScript to see the gallery.</p></noscript>
+      </div>
+    </section>
+
+    <!-- ================= MY VTC ================= -->
+    <section id="vtc" class="section">
+      <div class="wrap">
+        <h2 data-i18n="nav.vtc">My VTC</h2>
+
+        <div class="vtc">
+          <div class="vtc-banner">
+            <img src="https://static.truckersmp.com/images/vtc/cover/jastuk.1777035175.png" alt="" loading="lazy" data-hide-on-error>
+            <div class="vtc-banner-text">
+              <span class="logo logo-lg" data-initials="J"><img src="https://i.ibb.co/Q7bSKdXL/image.png" alt="" referrerpolicy="no-referrer" data-fallback></span>
+              <div>
+                <h3>Jastuk</h3>
+                <p data-i18n="vtc.subtitle">Virtual Trucking Company, since 2026</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="vtc-body">
+            <div class="vtc-cols">
+              <div>
+                <h4 data-i18n="vtc.aboutTitle">About Jastuk</h4>
+                <!-- JustNico and Luca become links to their TruckersMP profiles (see data-autolink) -->
+                <p data-i18n="vtc.about1" data-autolink='{"JustNico":"https://truckersmp.com/user/4100309","Luca":"https://truckersmp.com/user/5202595"}' data-autolink-title="link.tmpProfile">Jastuk was founded on April 23, 2026 by JustNico and Luca. Their goal is to build an inclusive, international community of drivers who share a passion for the roads of Europe and America.</p>
+                <p data-i18n="vtc.about2">It’s more than a VTC. It’s a family, with organized convoys, events and a warm, welcoming atmosphere.</p>
+                <blockquote data-i18n="vtc.mission">Our mission: to make every driver feel at home, in a warm place where everyone belongs.</blockquote>
+              </div>
+              <div>
+                <h4 data-i18n="vtc.datesTitle">Key dates</h4>
+                <ol class="vtc-dates">
+                  <li><time datetime="2026-04-23" data-i18n="vtc.date1">April 23, 2026</time><span data-i18n="vtc.date1Label">Founded</span></li>
+                  <li><time datetime="2026-04-29" data-i18n="vtc.date2">April 29, 2026</time><span data-i18n="vtc.date2Label">Validated</span></li>
+                  <li><time datetime="2026-08-21" data-i18n="vtc.date3">August 21, 2026</time><span data-i18n="vtc.date3Label">Verified</span></li>
+                </ol>
+                <h4 data-i18n="vtc.joinTitle">To join</h4>
+                <ul class="vtc-req">
+                  <li data-i18n="vtc.req1">Be at least 16 years old</li>
+                  <li data-i18n="vtc.req2">Have a TruckersMP account at least 3 months old</li>
+                  <li data-i18n="vtc.req3">Have fewer than 4 active bans</li>
+                  <li data-i18n="vtc.req4">Join the Discord server</li>
+                </ul>
+              </div>
+            </div>
+
+            <h4 data-i18n="vtc.offersTitle">What Jastuk offers</h4>
+            <ul class="offers">
+              <li><strong>Drivers Hub</strong><span data-i18n="offer.hub">Events, distance driven, jobs and leaderboards in one place.</span></li>
+              <li><strong>Job Tracker</strong><span data-i18n="offer.tracker">Tracks your jobs, distance and earnings.</span></li>
+              <li><strong>Discord</strong><span data-i18n="offer.discord">Plenty of chat channels, driver-only channels and custom roles.</span></li>
+              <li><strong>Management</strong><span data-i18n="offer.management">A team that keeps the VTC running and supports drivers.</span></li>
+              <li><strong data-i18n="offer.convoysName">Convoys</strong><span data-i18n="offer.convoys">Weekly convoys for drivers and monthly public convoys.</span></li>
+              <li><strong data-i18n="offer.communityName">Community</strong><span data-i18n="offer.community">Friendly drivers who help the community grow.</span></li>
+            </ul>
+
+            <div class="role">
+              <h4 data-i18n="role.title">My role</h4>
+              <p data-i18n="role.text">I’m the Human Resources Manager and a Discord moderator. I review applications, welcome new members and handle ban appeals.</p>
+            </div>
+
+            <div class="vtc-actions">
+              <a class="btn btn-vtc" href="https://jastukvtc.com/" target="_blank" rel="noopener">
+                <img class="btn-icon" src="https://i.ibb.co/Q7bSKdXL/image.png" alt="" referrerpolicy="no-referrer" data-hide-on-error>
+                <span data-i18n="vtc.btnSite">Visit the official site</span>
+              </a>
+              <a class="btn btn-ghost" href="https://discord.jastukvtc.com" target="_blank" rel="noopener" data-i18n="vtc.btnDiscord">Join the Discord</a>
+              <a class="btn btn-ghost" href="https://truckersmp.com/vtc/88850/" target="_blank" rel="noopener">
+                <img class="btn-icon" src="https://i.ibb.co/HfDnKvPW/image.png" alt="" referrerpolicy="no-referrer" data-hide-on-error>
+                <span data-i18n="vtc.btnTmp">TruckersMP page</span>
+              </a>
+              <a class="btn btn-ghost" href="https://truckersmp.com/vtc/88850/recruitment-form/5067-jastuk--application-form" target="_blank" rel="noopener" data-i18n="vtc.btnApply">Apply</a>
+            </div>
+
+            <!-- Patreon of Jastuk -->
+            <a class="patreon" href="https://patreon.com/Jastuk" target="_blank" rel="noopener">
+              <span class="patreon-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M22.957 7.21c-.004-3.064-2.391-5.576-5.191-6.482-3.478-1.125-8.064-.962-11.384.604C2.357 3.231 1.093 7.391 1.046 11.54c-.039 3.411.302 12.396 5.369 12.46 3.765.047 4.326-4.804 6.068-7.141 1.24-1.662 2.836-2.132 4.801-2.618 3.376-.836 5.678-3.501 5.673-7.031Z"/></svg></span>
+              <span class="patreon-text"><strong data-i18n="patreon.title">I’d love to become a Patron</strong><span data-i18n="patreon.sub">Support Jastuk and our community</span></span>
+              <svg class="patreon-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LATEST CHANGES ================= -->
+    <!-- Add an entry in the CHANGES list at the top of js/script.js -->
+    <section id="changes" class="section section-small">
+      <div class="wrap">
+        <h2 data-i18n="nav.changes">Latest Changes</h2>
+        <ol class="changes" id="changes-list"></ol>
+        <div class="changes-more" id="changes-more-wrap" hidden>
+          <button class="btn btn-ghost" id="changes-more" type="button" aria-expanded="false" aria-controls="changes-list">See more</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-main">
+        <div>
+          <p class="footer-name">Kyann</p>
+          <p class="footer-made"><span data-i18n="footer.madeA">Made with</span> <span class="heart" role="img" aria-label="love" data-i18n-attr="aria-label:footer.heart">♥</span> <span data-i18n="footer.madeB">in France</span></p>
+        </div>
+
+        <div class="footer-end">
+          <div class="footer-logos">
+            <a class="logo-link" href="https://truckersmp.com/" target="_blank" rel="noopener" title="Visit TruckersMP" aria-label="Visit TruckersMP" data-i18n-attr="title:link.tmp,aria-label:link.tmp">
+              <span class="logo" data-initials="TM"><img src="https://i.ibb.co/HfDnKvPW/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+            </a>
+            <a class="logo-link" href="https://jastukvtc.com/" target="_blank" rel="noopener" title="Visit Jastuk" aria-label="Visit Jastuk" data-i18n-attr="title:link.jastuk,aria-label:link.jastuk">
+              <span class="logo" data-initials="J"><img src="https://i.ibb.co/Q7bSKdXL/image.png" alt="" referrerpolicy="no-referrer" loading="lazy" data-fallback></span>
+            </a>
+            <span class="footer-sep" aria-hidden="true"></span>
+            <!-- Social networks: icons from Simple Icons (CC0) -->
+            <a class="social" href="https://www.instagram.com/kyann_tmp/" target="_blank" rel="noopener" title="Follow me on Instagram" aria-label="Follow me on Instagram" data-i18n-attr="title:link.instagram,aria-label:link.instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg>
+            </a>
+            <a class="social" href="https://www.tiktok.com/@kyann_tmp" target="_blank" rel="noopener" title="Follow me on TikTok" aria-label="Follow me on TikTok" data-i18n-attr="title:link.tiktok,aria-label:link.tiktok">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+            </a>
+            <a class="social" href="https://discord.com/invite/epXT2YAFCb" target="_blank" rel="noopener" title="Join my Discord" aria-label="Join my Discord" data-i18n-attr="title:link.discord,aria-label:link.discord">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
+            </a>
+            <a class="social" href="https://www.twitch.tv/kyanntmp" target="_blank" rel="noopener" title="Watch me on Twitch" aria-label="Watch me on Twitch" data-i18n-attr="title:link.twitch,aria-label:link.twitch">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>
+            </a>
+          </div>
+          <a class="to-top" id="to-top" href="#" title="Back to top" aria-label="Back to top" data-i18n-attr="title:footer.top,aria-label:footer.top">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Lightbox for the gallery: zoom (buttons, wheel, pinch, double-click), drag, arrows, full screen -->
+  <dialog class="lightbox" id="lightbox" aria-label="Photo viewer" data-i18n-attr="aria-label:lb.viewer">
+    <div class="lb-toolbar" role="toolbar" aria-label="Photo viewer" data-i18n-attr="aria-label:lb.viewer">
+      <button class="lb-btn" id="lb-zoom-out" type="button" aria-label="Zoom out" title="Zoom out" data-i18n-attr="aria-label:lb.zoomOut,title:lb.zoomOut"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="lb-btn lb-level" id="lb-zoom-reset" type="button" aria-label="Reset zoom" title="Reset zoom" data-i18n-attr="aria-label:lb.reset,title:lb.reset"><span id="lb-zoom-level">100%</span></button>
+      <button class="lb-btn" id="lb-zoom-in" type="button" aria-label="Zoom in" title="Zoom in" data-i18n-attr="aria-label:lb.zoomIn,title:lb.zoomIn"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <a class="lb-btn" id="lb-original" href="#" target="_blank" rel="noopener" aria-label="Open the original image" title="Open the original image" data-i18n-attr="aria-label:lb.original,title:lb.original"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <button class="lb-btn" id="lb-fullscreen" type="button" aria-label="Full screen" title="Full screen" data-i18n-attr="aria-label:lb.fullscreen,title:lb.fullscreen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="lb-btn lb-close" id="lb-close" type="button" aria-label="Close" title="Close" data-i18n-attr="aria-label:lb.close,title:lb.close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+    <button class="lb-btn lb-prev" id="lb-prev" type="button" aria-label="Previous photo" data-i18n-attr="aria-label:lb.prev"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="lb-btn lb-next" id="lb-next" type="button" aria-label="Next photo" data-i18n-attr="aria-label:lb.next"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="lb-stage" id="lb-stage"></div>
+    <div class="lb-foot">
+      <p id="lb-caption"></p>
+      <p class="lb-hint" data-i18n="lb.hint">Scroll or pinch to zoom. Drag to move. Double-click to zoom in.</p>
+    </div>
+  </dialog>
+
+  <!-- Order matters: translations first, then the page logic, then the intro animation -->
+  <script src="js/i18n.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/hero.js"></script>
+</body>
+</html>
