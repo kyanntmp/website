@@ -1,15 +1,3 @@
-/* Optional: your own "now playing" service for the Spotify card.
-   It runs for free on Cloudflare Workers. Setup steps are in LISEZMOI.txt.
-
-   Variables to add in Cloudflare (Settings > Variables, use "Encrypt" for the first three):
-     SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN
-     ALLOWED_ORIGIN   the address of your site, for example https://your-name.github.io
-
-   It answers with JSON:
-     { "isPlaying": false }
-     { "isPlaying": true, "title": "...", "artist": "...", "album": "...", "albumArt": "https://...",
-       "trackId": "...", "progressMs": 12345, "durationMs": 215000 } */
-
 export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
